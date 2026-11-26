@@ -1,0 +1,10 @@
+{
+  "name": "gta6-yuukii1ii-build",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
