@@ -21,7 +21,7 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml",
 };
 
-const PUBLIC_FILES = new Set(["/index.html", "/styles.css", "/script.js"]);
+const PUBLIC_FILES = new Set(["/index.html", "/styles.css", "/script.js", "/bg.jpg"]);
 
 function loadEnv(envPath) {
   if (!fs.existsSync(envPath)) return;
