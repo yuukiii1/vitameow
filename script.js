@@ -6,10 +6,34 @@ const statusEl = document.getElementById("form-status");
 const downloadsSection = document.getElementById("downloads-section");
 const lockNote = document.getElementById("downloads-lock-note");
 const downloadLinks = document.querySelectorAll(".download-link");
+const toastEl = document.getElementById("toast");
+
+let toastTimer = null;
 
 function setStatus(message, type) {
   statusEl.textContent = message;
   statusEl.className = type ? `form-status ${type}` : "form-status";
+}
+
+function showToast(message) {
+  if (!toastEl) return;
+  toastEl.textContent = message;
+  toastEl.hidden = false;
+  requestAnimationFrame(() => {
+    toastEl.classList.add("is-visible");
+  });
+
+  if (toastTimer) {
+    clearTimeout(toastTimer);
+  }
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove("is-visible");
+    setTimeout(() => {
+      if (!toastEl.classList.contains("is-visible")) {
+        toastEl.hidden = true;
+      }
+    }, 250);
+  }, 5000);
 }
 
 function unlockDownloads() {
@@ -24,13 +48,16 @@ function unlockDownloads() {
     link.removeAttribute("aria-disabled");
     link.removeAttribute("tabindex");
   }
+  downloadsSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 for (const link of downloadLinks) {
   link.addEventListener("click", (event) => {
     if (downloadsSection.classList.contains("is-locked")) {
       event.preventDefault();
+      return;
     }
+    showToast("Happy GTA6-MAS from yuukii");
   });
 }
 
