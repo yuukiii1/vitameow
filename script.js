@@ -8,7 +8,58 @@ const lockNote = document.getElementById("downloads-lock-note");
 const downloadLinks = document.querySelectorAll(".download-link");
 const toastEl = document.getElementById("toast");
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const ALLOWED_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "outlook.com",
+  "outlook.in",
+  "outlook.co.uk",
+  "hotmail.com",
+  "hotmail.co.uk",
+  "live.com",
+  "live.co.uk",
+  "msn.com",
+  "yahoo.com",
+  "yahoo.co.in",
+  "yahoo.co.uk",
+  "yahoo.ca",
+  "yahoo.de",
+  "yahoo.fr",
+  "yahoo.com.au",
+  "ymail.com",
+  "rocketmail.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "proton.me",
+  "protonmail.com",
+  "pm.me",
+  "aol.com",
+  "zoho.com",
+  "zohomail.com",
+  "gmx.com",
+  "gmx.net",
+  "mail.com",
+  "fastmail.com",
+  "tuta.com",
+  "tuta.io",
+  "tutamail.com",
+  "yandex.com",
+  "yandex.ru",
+  "rediffmail.com",
+]);
+
 let toastTimer = null;
+
+function isAllowedEmail(email) {
+  if (!EMAIL_REGEX.test(email) || email.length > 254) return false;
+  const parts = email.toLowerCase().split("@");
+  if (parts.length !== 2) return false;
+  const [localPart, domain] = parts;
+  if (!localPart || /^[.]|[.]$|\.\./.test(localPart)) return false;
+  return ALLOWED_EMAIL_DOMAINS.has(domain);
+}
 
 function setStatus(message, type) {
   statusEl.textContent = message;
@@ -73,8 +124,17 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (!email || !emailInput.checkValidity()) {
+  if (!email || !emailInput.checkValidity() || !EMAIL_REGEX.test(email)) {
     setStatus("Please enter a valid email address.", "error");
+    emailInput.focus();
+    return;
+  }
+
+  if (!isAllowedEmail(email)) {
+    setStatus(
+      "Please use a known email provider (e.g. Gmail, Outlook, Yahoo, iCloud, Proton).",
+      "error"
+    );
     emailInput.focus();
     return;
   }
